@@ -4,7 +4,7 @@ import whisper
 import argparse
 import warnings
 import tempfile
-from .utils import filename, str2bool, write_srt
+from utils import filename, str2bool, write_srt
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("video", nargs="+", type=str,
                         help="paths to video files to transcribe")
-    parser.add_argument("--model", default="small",
+    parser.add_argument("--model", default="small.en",
                         choices=whisper.available_models(), help="name of the Whisper model to use")
     parser.add_argument("--output_dir", "-o", type=str,
                         default=".", help="directory to save the outputs")
@@ -64,7 +64,7 @@ def main():
 
         ffmpeg.concat(
             video.filter('subtitles', srt_path, force_style="OutlineColour=&H40000000,BorderStyle=3"), audio, v=1, a=1
-        ).output(out_path).run(quiet=True, overwrite_output=True)
+        ).output(out_path, vcodec="h264_videotoolbox").run(quiet=True, overwrite_output=True)
 
         print(f"Saved subtitled video to {os.path.abspath(out_path)}.")
 
